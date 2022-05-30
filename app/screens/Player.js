@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import Screen from '../components/Screen';
 import color from '../misc/color';
@@ -163,12 +163,21 @@ const Player = () => {
           {`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}
         </Text>
         <View style={styles.midBannerContainer}>
-          <MaterialCommunityIcons
-            name="music-circle"
-            size={300}
-            color={context.isPlaying ? color.ACTIVE_BG : color.FONT_MEDIUM}
+          <Image
+            style={styles.tinyLogo}
+            source={
+              context.isPlaying
+                ? require('../../assets/logo-radiorasa.png')
+                : require('../../assets/logo-nehzat.png')
+            }
           />
         </View>
+        {context.isPlaying ? (
+          <Text style={styles.statusText}>در حال پخش ...</Text>
+        ) : (
+          <Text style={styles.statusText}>پخش متوقف شده است.</Text>
+        )}
+
         <View style={styles.audioPlayerContainer}>
           <Text numberOfLines={1} style={styles.audioTitle}>
             {context.currentAudio.title}
@@ -194,7 +203,7 @@ const Player = () => {
             maximumTrackTintColor={color.ACTIVE_BG}
             onValueChange={(value) => {
               setCurrentPosition(
-                convertTime(value * (playbackDuration / 1000))
+                convertTime(value * context.currentAudio.duration)
               );
             }}
             onSlidingStart={async () => {
@@ -227,6 +236,14 @@ const Player = () => {
 };
 export default Player;
 const styles = StyleSheet.create({
+  statusText: {
+    fontFamily: 'iranYekan',
+    fontSize: 16,
+    color: color.FONT,
+    padding: 15,
+    textAlign: 'center',
+    direction: 'rtl',
+  },
   audioControllers: {
     width,
     flexDirection: 'row',
@@ -260,5 +277,9 @@ const styles = StyleSheet.create({
     color: color.FONT,
     padding: 15,
     textAlign: 'right',
+  },
+  tinyLogo: {
+    width: width - 50,
+    resizeMode: 'contain',
   },
 });
